@@ -60,7 +60,7 @@ imgRouter.get("/", async (req: Request, res: Response): Promise<void> => {
   if (existingEdited) {
     fs.readFile(filePathEditedImage)
       .then((editedData: Buffer) => {
-        res.status(200).send(editedData);
+        res.status(200).contentType('jpg').send(editedData);
       })
       .catch(() => {
         res.status(500).send("Error occured processing the image");
@@ -92,7 +92,7 @@ imgRouter.get("/", async (req: Request, res: Response): Promise<void> => {
       return fs
         .writeFile(filePathEditedImage, imgBuffer)
         .then(() => {
-          res.status(200).send(imgBuffer);
+          res.status(200).contentType('jpg').send(imgBuffer);
         })
         .catch(() => {
           res.status(500).send("Error occured processing the image");

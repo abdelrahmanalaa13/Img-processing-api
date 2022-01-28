@@ -5,5 +5,5 @@ import imgRouter from "./api/imgRouter";
 const routes = express.Router();
 
 routes.use("/imgList", imgListRouter);
-routes.use("/img", imgRouter);
+routes.use("/imgs", imgRouter);
 export default routes;
