@@ -1,26 +1,26 @@
-import { Request, Response } from "express";
-import * as express from "express";
-import * as fs from "fs/promises";
-import * as path from "path";
-import { Stats } from "fs";
-import * as sharp from "sharp";
+import { Request, Response } from 'express';
+import * as express from 'express';
+import * as fs from 'fs/promises';
+import * as path from 'path';
+import { Stats } from 'fs';
+import * as sharp from 'sharp';
 
 const imgRouter = express.Router();
 
-imgRouter.get("/", async (req: Request, res: Response): Promise<void> => {
-  const filename: string | any = req.query["filename"];
-  const height: number | null = req.query["height"]
-    ? +req.query["height"]
+imgRouter.get('/', async (req: Request, res: Response): Promise<void> => {
+  const filename: string = req.query['filename'] + '';
+  const height: number | null = req.query['height']
+    ? +req.query['height']
     : null;
-  const width: number | null = req.query["width"] ? +req.query["width"] : null;
-  console.log("filename", "height", "width");
+  const width: number | null = req.query['width'] ? +req.query['width'] : null;
+  console.log('filename', 'height', 'width');
 
   // check if the query is correct
   if (!filename || !height || !width) {
     res
       .status(400)
       .send(
-        "Please make sure url of the filename, height and width paramitars"
+        'Please make sure url of the filename, height and width paramitars'
       );
     return;
   }
@@ -30,25 +30,23 @@ imgRouter.get("/", async (req: Request, res: Response): Promise<void> => {
     __dirname,
     `../../../assets/imgs/${filename}.jpg`
   )}`;
-  console.log("filePathOrgImage");
+  console.log('filePathOrgImage');
 
   // edited path in the ${filename}-${height}x${width} format to save different dimensions
   const filePathEditedImage = `${path.resolve(
     __dirname,
     `../../../assets/edited/${filename}-${height}x${width}.jpg`
   )}`;
-  console.log("filePathEditedImage");
+  console.log('filePathEditedImage');
 
   // Check if filename exists in full folder
   const fullImage: Stats | null = await fs.stat(filePathOrgImage).catch(() => {
-    res.status(404).send("Image does not exist");
+    res.status(404).send('Image does not exist');
     return null;
   });
-  console.log("fullImage");
+  console.log('fullImage');
 
-  if (!fullImage) {
-    return;
-  }
+  if (!fullImage) return;
 
   // Check if edited was already created
   const existingEdited: Stats | null = await fs
@@ -63,24 +61,19 @@ imgRouter.get("/", async (req: Request, res: Response): Promise<void> => {
         res.status(200).contentType('jpg').send(editedData);
       })
       .catch(() => {
-        res.status(500).send("Error occured processing the image");
+        res.status(500).send('Error occured processing the image');
       });
   } else {
-    // resize image
-    console.log("async");
-
     (async () => {
-      console.log("asyncin");
-
-      const data: Buffer | null = await fs
+      const dataBuffer: Buffer | null = await fs
         .readFile(filePathOrgImage)
         .catch(() => null);
 
-      if (!data) {
+      if (!dataBuffer) {
         return Promise.reject();
       }
 
-      const imgBuffer: Buffer | null = await sharp(data)
+      const imgBuffer: Buffer | null = await sharp(dataBuffer)
         .resize(width, height)
         .toBuffer()
         .catch(() => null);
@@ -95,7 +88,7 @@ imgRouter.get("/", async (req: Request, res: Response): Promise<void> => {
           res.status(200).contentType('jpg').send(imgBuffer);
         })
         .catch(() => {
-          res.status(500).send("Error occured processing the image");
+          res.status(500).send('Error occured processing the image');
         });
     })();
   }

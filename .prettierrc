@@ -1,1 +1,5 @@
-{ "prettier": "prettier --config .prettierrc \"src/**/*.ts\" --write" }
+{
+  "semi": true,
+  "singleQuote": true,
+  "tabWidth": 2
+}
