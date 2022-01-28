@@ -85,6 +85,8 @@ imgRouter.get('/', async (req: Request, res: Response): Promise<void> => {
       return fs
         .writeFile(filePathEditedImage, imgBuffer)
         .then(() => {
+          console.log(imgBuffer);
+
           res.status(200).contentType('jpg').send(imgBuffer);
         })
         .catch(() => {

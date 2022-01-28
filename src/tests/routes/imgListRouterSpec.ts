@@ -1,10 +1,9 @@
-import * as request from 'request';
-const base_url = 'http://localhost:1313';
+import * as request from 'supertest';
+import app from '../..';
 
 describe('GET imgsList API', (): void => {
   it('responds with 200', async () => {
-    request.get(base_url + '/api/imgList', (error, response, body) => {
-      expect(response.statusCode).toBe(200);
-    });
+    const result = await request(app).get('/api/imgList');
+    expect(result.statusCode).toEqual(200);
   });
 });
